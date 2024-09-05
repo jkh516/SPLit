@@ -14,20 +14,7 @@ library(highcharter)
 # we can do this once at startup
 # and then use the value throughout the lifetime of the app
 
-## Laptop1
-#Data2324 <- read_excel("//userfs.its.york.ac.uk/jkh516/Research/Sports/SPL RDD/app1/Data2324.xlsx", 
-                       #col_types = c("text", "numeric", "text", 
-                                 #    "date", "date", "text", "text", "text", 
-                                   #  "numeric", "text", "numeric", "numeric", 
-                                    # "numeric", "numeric"))
-## Uni PC
-
-#Data2324 <- read_excel("Data2324.xlsx", col_types = c("text", 
-#                                                      "numeric", "text", "date", "date", "text", 
-#                                                      "text", "text", "numeric", "text", "numeric", 
-#                                                      "numeric", "numeric", "numeric"))
-
-### Laptop 2
+### Load Data
 Data2324 <- read_excel("Data2324.xlsx", 
                        col_types = c("text", "numeric", "text", 
                                      "date", "date", "text", "text", "text", 
