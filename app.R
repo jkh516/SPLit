@@ -4,6 +4,10 @@ library(readxl)
 library(ggplot2)
 library(plotly)
 
+library(ggiraph)
+library(tidyverse)
+library(highcharter) 
+
 # Preamble ----
 
 # Anything that doesn't rely on any user inputs,
@@ -18,12 +22,23 @@ library(plotly)
                                     # "numeric", "numeric"))
 ## Uni PC
 
-Data2324 <- read_excel("Data2324.xlsx", col_types = c("text", 
-                                                      "numeric", "text", "date", "date", "text", 
-                                                      "text", "text", "numeric", "text", "numeric", 
-                                                      "numeric", "numeric", "numeric"))
+#Data2324 <- read_excel("Data2324.xlsx", col_types = c("text", 
+#                                                      "numeric", "text", "date", "date", "text", 
+#                                                      "text", "text", "numeric", "text", "numeric", 
+#                                                      "numeric", "numeric", "numeric"))
+
+### Laptop 2
+Data2324 <- read_excel("Data2324.xlsx", 
+                       col_types = c("text", "numeric", "text", 
+                                     "date", "date", "text", "text", "text", 
+                                     "numeric", "text", "numeric", "numeric", 
+                                     "numeric", "numeric"))
+
 ### Fix colours for consistent plotting
 team.colours2 <- c("Aberdeen" = "red", "Celtic"= "green", "Dundee" = "black", "Hearts" = "purple", "Hibernian" = "deeppink", "Kilmarnock" = "grey", "Livingston" = "violet", "Motherwell" = "orange", "Rangers" = "blue", "Ross County" ="deepskyblue", "St Johnstone" = "yellow", "St Mirren" ="cyan")
+
+### Fix line styles for attendance proportion plot
+custom_dashes <- c("Aberdeen" = "Dash", "Celtic"= "Solid", "Dundee" = "Solid", "Hearts" = "Solid", "Hibernian" = "Dash", "Kilmarnock" = "Solid", "Livingston" = "Dash", "Motherwell" = "Dash", "Rangers" = "Solid", "Ross County" ="Dash", "St Johnstone" = "Dash", "St Mirren" ="Solid")
 
 
 
@@ -60,12 +75,21 @@ ui <- fluidPage(
     
     # Main panel for displaying outputs ----
     mainPanel(width=10, 
+              
+              ####
+              # Output: Tabset w/ plot, summary, and table ----
+              tabsetPanel(type = "tabs",
+                          tabPanel("All Attendances", highchartOutput("AllPlot")),
+                          # Output: Reqested attendance plot ----
+                          tabPanel("Team Attendance", plotlyOutput("TeamPlot", height="auto", width="auto"))
+              
+              ####
       
-      # Output: Reqested attendance plot ----
-      plotlyOutput("TeamPlot", height="auto", width="auto")
+     
       
-    )
+    ),
   )
+),
 )
 
 # Define server logic to plot various variables against Group ----
@@ -106,6 +130,20 @@ server <- function(input, output) {
     #p()$x$data[[1]]$hoverinfo <- "none"
     ggplotly(p(),tooltip="text")
        })
+########
+  output$AllPlot <- renderHighchart({
+    hc <- hchart(  Data2324, "line",   hcaes(x = MWk, y = Aprop, group = Home),  color = team.colours2, dashStyle=custom_dashes ) |>
+      hc_title(text = "Attendance as a Proption of Stadium Capacity") |>
+      hc_xAxis(title = list(text = "Match Week"), plotBands = list(list(color="lightgrey", from=34, to=39))) |>
+      hc_yAxis(title = list(text = "Proportion"), max=1) |>
+      hc_tooltip(crosshairs=TRUE, formatter = JS("function(){
+                            return ('Team: ' + this.point.Home + '<br> Opponent: ' + this.point.Away + ' <br> Attendance: ' + this.point.Attendance + ' <br> Match Week: ' + this.point.MWk + '<br> Round: ' + this.point.Round)
+                            }"))
+    hc
+  })
+  
+  ##########
+
 
 }
 
