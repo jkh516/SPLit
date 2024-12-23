@@ -56,7 +56,7 @@ ui <- fluidPage(
   sidebarLayout(
     
     # Sidebar panel for inputs ----
-    sidebarPanel(width=2,
+    sidebarPanel(style = "position:fixed;width:inherit;", width=2,
                  
                  selectInput("season", "Season:",c("2023/24",
                                                    "2022/23",
