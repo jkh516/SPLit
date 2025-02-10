@@ -184,7 +184,7 @@ server <- function(input, output) {
   ########
   output$AllPlot <- renderHighchart({
     hc <- hchart(  data(), "line",   hcaes(x = MWk, y = Aprop, group = Home),  color = colours(), dashStyle=dashes() ) |>
-      hc_title(text = "Attendance as a Proption of Stadium Capacity") |>
+      hc_title(text = "Attendance as a Proportion of Stadium Capacity") |>
       hc_xAxis(title = list(text = "Match Week"), plotBands = list(list(color="lightgrey", from=33.5, to=39))) |>
       hc_yAxis(title = list(text = "Proportion"), max=1) |>
       hc_tooltip(crosshairs=TRUE, formatter = JS("function(){
